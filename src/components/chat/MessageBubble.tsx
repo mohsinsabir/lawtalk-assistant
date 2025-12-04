@@ -12,27 +12,35 @@ interface MessageBubbleProps {
 
 // Parse AI response to extract law reference and punishment
 const parseAIResponse = (content: string) => {
-  // Try to find "Section XXX" pattern
-  const sectionMatch = content.match(/Section\s+(\d+[A-Z]?)\s*[–-]\s*([^\n]+)/i);
+  // Extract law reference: everything from "Section" up to "Punishment:"
+  const lawRefMatch = content.match(/Section[\s\S]+?(?=Punishment:)/i);
+  // Extract punishment: everything after "Punishment:"
+  const punishmentParts = content.split(/Punishment:/i);
+  const punishmentText = punishmentParts[1]?.trim();
   
-  if (sectionMatch) {
-    const sectionNumber = sectionMatch[1];
-    const sectionTitle = sectionMatch[2].trim();
-    
-    // Get the rest as punishment/description
-    const afterSection = content.substring(content.indexOf(sectionMatch[0]) + sectionMatch[0].length).trim();
-    
+  if (lawRefMatch && punishmentText) {
     return {
       hasStructure: true,
-      section: `Section ${sectionNumber} – ${sectionTitle}`,
+      section: lawRefMatch[0].trim(),
+      punishment: punishmentText,
+    };
+  }
+  
+  // Fallback: try to find just Section pattern
+  const sectionMatch = content.match(/Section\s+\d+[A-Z]?\s*[–-]?\s*[^\n]*/i);
+  if (sectionMatch) {
+    const afterSection = content.substring(content.indexOf(sectionMatch[0]) + sectionMatch[0].length).trim();
+    return {
+      hasStructure: true,
+      section: sectionMatch[0].trim(),
       punishment: afterSection || "No additional details provided.",
     };
   }
   
-  // If no section pattern found, return as plain text
+  // If nothing extracted, return as plain text
   return {
     hasStructure: false,
-    content: content,
+    content: content || "Unable to interpret legal section.",
   };
 };
 
