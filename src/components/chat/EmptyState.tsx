@@ -1,8 +1,18 @@
 import { Scale, BookOpen, MessageSquare } from "lucide-react";
 
-const EmptyState = () => {
+interface EmptyStateProps {
+  onSendQuestion: (question: string) => void;
+}
+
+const sampleQuestions = [
+  { icon: BookOpen, text: "What is the punishment for theft?" },
+  { icon: MessageSquare, text: "Explain Section 302 of PPC" },
+  { icon: Scale, text: "What constitutes criminal negligence?" },
+];
+
+const EmptyState = ({ onSendQuestion }: EmptyStateProps) => {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center px-4 animate-fade-in">
+    <div className="flex flex-col items-center justify-center w-full text-center px-4 animate-fade-in">
       <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 mb-6">
         <Scale className="w-12 h-12 text-primary" />
       </div>
@@ -14,24 +24,18 @@ const EmptyState = () => {
       </p>
       
       <div className="grid gap-3 w-full max-w-md">
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border text-left">
-          <BookOpen className="w-5 h-5 text-primary flex-shrink-0" />
-          <span className="text-sm text-foreground/80">
-            "What is the punishment for theft?"
-          </span>
-        </div>
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border text-left">
-          <MessageSquare className="w-5 h-5 text-primary flex-shrink-0" />
-          <span className="text-sm text-foreground/80">
-            "Explain Section 302 of PPC"
-          </span>
-        </div>
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border text-left">
-          <Scale className="w-5 h-5 text-primary flex-shrink-0" />
-          <span className="text-sm text-foreground/80">
-            "What constitutes criminal negligence?"
-          </span>
-        </div>
+        {sampleQuestions.map((question, index) => (
+          <button
+            key={index}
+            onClick={() => onSendQuestion(question.text)}
+            className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border text-left hover:bg-accent hover:border-primary/50 transition-all duration-200 cursor-pointer group"
+          >
+            <question.icon className="w-5 h-5 text-primary flex-shrink-0 group-hover:scale-110 transition-transform" />
+            <span className="text-sm text-foreground/80 group-hover:text-foreground">
+              {question.text}
+            </span>
+          </button>
+        ))}
       </div>
     </div>
   );
