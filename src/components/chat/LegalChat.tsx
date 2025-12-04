@@ -49,19 +49,17 @@ const LegalChat = () => {
 
       const data = await response.json();
       
-      // Extract the assistant's response from the API
+      // Extract the reply from the API response
       let assistantContent = "";
       
-      if (data.response) {
+      if (data.reply) {
+        assistantContent = data.reply;
+      } else if (data.response) {
         assistantContent = data.response;
-      } else if (data.choices && data.choices[0]?.message?.content) {
-        assistantContent = data.choices[0].message.content;
-      } else if (data.message) {
-        assistantContent = data.message;
       } else if (typeof data === "string") {
         assistantContent = data;
       } else {
-        assistantContent = JSON.stringify(data);
+        assistantContent = "Unable to interpret legal section.";
       }
 
       const assistantMessage: Message = {
