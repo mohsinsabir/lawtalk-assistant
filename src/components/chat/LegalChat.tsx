@@ -100,8 +100,8 @@ const LegalChat = () => {
       <main className="flex-1 overflow-y-auto scrollbar-thin">
         <div className="max-w-[900px] mx-auto px-4 py-6">
           {messages.length === 0 ? (
-            <div className="h-[calc(100vh-300px)] flex items-center">
-              <EmptyState />
+            <div className="h-[calc(100vh-200px)] flex items-center justify-center">
+              <EmptyState onSendQuestion={sendMessage} />
             </div>
           ) : (
             <div className="space-y-6">
